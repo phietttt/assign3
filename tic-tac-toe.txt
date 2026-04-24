@@ -4,3 +4,15 @@
 - Added the 'Board' component. Squares were initially hard-coded, but turned it into new Square component separate from board
 - Changed square function to display an "X" when clicking on a square
 - Revamped click handling for board function using useState to handle board storage
+- Completed working tic-tac-toe game: X and O's are only placed once in a square
+
+2026-04-24
+- Implemented time travel feature following the React tutorial
+- Refactored Board component to accept xIsNext, squares, and onPlay as props instead of managing its own state
+- Lifted state up to a new Game component which owns history (array of board snapshots) and currentMove (index into history)
+- Game computes xIsNext from currentMove % 2 and passes currentSquares = history[currentMove] to Board
+- handlePlay in Game appends the new board state to history (truncating any future states when jumping back mid-game)
+- jumpTo sets currentMove to a past move index, enabling time travel
+- Game renders a numbered list of move buttons; clicking one jumps back to that board state
+- Fixed dead code that was inside calculateWinner after return null (status display logic moved into Board)
+- Fixed duplicate export default issue by removing the old App component; Game is now the sole default export
