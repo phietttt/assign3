@@ -1,0 +1,49 @@
+2026-04-24
+
+Starting from the completed tic-tac-toe app (with time travel), modified src/App.jsx to implement
+chorus lapilli ("dancing grains"), a variant of terni lapilli from ancient Rome.
+
+Rules implemented:
+- Players alternate placing pieces on a 3x3 board, goal is 3 in a row (same as tic-tac-toe)
+- Each player's first 3 moves are placement moves (place a piece on any empty square)
+- From each player's 4th move onward (when they already have 3 pieces), they must instead
+  move one of their existing pieces to an adjacent empty square (up/down/left/right/diagonal)
+- Center square rule: if it is your turn, you have 3 pieces, and one is at the center square,
+  your move must either win the game or vacate the center square
+
+Key design decisions:
+
+1. Removed time travel from Game (not required for chorus lapilli).
+   Game now owns only `squares` (Array(9)) and `xIsNext` (bool).
+
+2. Board owns `selectedSquare` state (null or index 0-8) for the two-click movement mechanic.
+   - First click: selects one of the current player's pieces (highlighted in blue)
+   - Second click: selects destination square
+     - If same square clicked: deselect
+     - If another own piece clicked: re-select it
+     - If destination is occupied or not adjacent: revert to no selection
+     - If center rule active and move neither wins nor vacates center: revert
+
+3. ADJACENCY constant: precomputed map of which squares are adjacent to each index,
+   including diagonals. Board layout indices: 0,1,2 / 3,4,5 / 6,7,8.
+
+4. isMovementPhase is true when the current player already has 3 pieces on the board.
+   currentCount is derived by counting the current player's pieces in the squares array.
+
+5. Center rule check runs on the second click after adjacency validation. Builds the
+   candidate nextSquares, checks calculateWinner to see if it wins, and checks if the
+   selected piece was at index 4 (center). If neither, reverts selection.
+
+6. No pop-up/alert windows used anywhere (autograder requirement).
+
+7. Square component gets an isSelected prop; selected square is highlighted with
+   backgroundColor '#aaf' via inline style.
+
+Steps to reproduce:
+1. Clone the repo and run ./helper init
+2. Replace src/App.jsx with this implementation
+3. Run ./helper dev to verify in browser:
+   - First 6 moves work like tic-tac-toe (placement)
+   - Move 7+ requires selecting own piece then clicking adjacent empty square
+   - Invalid moves (non-adjacent, occupied, center rule violation) silently revert
+   - Game ends and no further moves accepted once a winner is found
