@@ -3,3 +3,4 @@
 - Created 'Square' component: Displays one box with an "X" in the middle Fixed by reordering the file.
 - Added the 'Board' component. Squares were initially hard-coded, but turned it into new Square component separate from board
 - Changed square function to display an "X" when clicking on a square
+- Revamped click handling for board function using useState to handle board storage
