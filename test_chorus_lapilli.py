@@ -155,6 +155,47 @@ class TestChorusLapilli(unittest.TestCase):
         tiles[0].click()
         self.assertTileIs(tiles[0], self.SYMBOL_X)
 
+    def test_winner_prevents_moves(self):
+        '''Check that no moves can be made after a player wins.'''
+        tiles = self.driver.find_elements(By.XPATH, self.BOARD_TILE_XPATH)
+        # X wins across the top row: X->0, O->3, X->1, O->4, X->2
+        tiles[0].click()
+        tiles[3].click()
+        tiles[1].click()
+        tiles[4].click()
+        tiles[2].click()
+        # X has won; clicking an empty square should have no effect
+        tiles[5].click()
+        self.assertTileIs(tiles[5], self.SYMBOL_BLANK)
+
+    def test_alternating_turns(self):
+        '''Check that X and O alternate turns correctly.'''
+        tiles = self.driver.find_elements(By.XPATH, self.BOARD_TILE_XPATH)
+        tiles[0].click()
+        self.assertTileIs(tiles[0], self.SYMBOL_X)
+        tiles[1].click()
+        self.assertTileIs(tiles[1], self.SYMBOL_O)
+        tiles[2].click()
+        self.assertTileIs(tiles[2], self.SYMBOL_X)
+        tiles[3].click()
+        self.assertTileIs(tiles[3], self.SYMBOL_O)
+
+    def test_movement_phase_invalid_destination(self):
+        '''Check that moving a piece to a non-adjacent square is rejected.'''
+        tiles = self.driver.find_elements(By.XPATH, self.BOARD_TILE_XPATH)
+        # Place 3 pieces each with no winner: X at 0,2,6 and O at 1,3,5
+        tiles[0].click()  # X at 0
+        tiles[1].click()  # O at 1
+        tiles[2].click()  # X at 2
+        tiles[3].click()  # O at 3
+        tiles[6].click()  # X at 6 — X now has 3 pieces, enters movement phase
+        tiles[5].click()  # O at 5 — O now has 3 pieces
+        # X's turn in movement phase: select piece at 0, then click 8 (not adjacent)
+        tiles[0].click()  # select X at 0
+        tiles[8].click()  # invalid destination (0 is adjacent to 1,3,4 only)
+        self.assertTileIs(tiles[0], self.SYMBOL_X)   # piece still at 0
+        self.assertTileIs(tiles[8], self.SYMBOL_BLANK)  # 8 still empty
+
 
 # ================= [DO NOT MAKE ANY CHANGES BELOW THIS LINE] =================
 
