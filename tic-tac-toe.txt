@@ -2,4 +2,4 @@
 - Setup: Forked and cloned the repository. Ran './helper init'.
 - Created 'Square' component: Displays one box with an "X" in the middle Fixed by reordering the file.
 - Added the 'Board' component. Squares were initially hard-coded, but turned it into new Square component separate from board
-- Changed square component to be 
+- Changed square function to display an "X" when clicking on a square
